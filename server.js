@@ -1,7 +1,9 @@
 // server.js
+import dotenv from 'dotenv';
+// Load environment variables
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import cron from 'node-cron'; // ⬅ Added cron import
@@ -10,8 +12,6 @@ import authRoutes from './routes/auth.routes.js';
 import foodRoutes from './routes/food.routes.js';
 import emailRoutes from './routes/emailRoutes.js';
 
-// Load environment variables
-dotenv.config();
 
 // Setup __dirname
 const __filename = fileURLToPath(import.meta.url);
