@@ -1,0 +1,14 @@
+name: Daily Email Trigger
+
+on:
+  schedule:
+    # 8:00 AM IST = 2:30 UTC
+    - cron: "30 2 * * *"
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Food Expiry Email
+        run: |
+          curl -X GET https://food-expiry-tracker-backend-h11q.onrender.com/test-email
