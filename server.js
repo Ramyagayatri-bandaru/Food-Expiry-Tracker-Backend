@@ -98,34 +98,14 @@ connectDB().then(async () => {
     }
   );
 
-  // -------------------- TEST ENDPOINT FOR SENDGRID --------------------
+// -------------------- REAL EXPIRY EMAIL TRIGGER ENDPOINT --------------------
 app.get("/test-email", async (req, res) => {
   try {
-    // Import your User model (adjust the path if needed)
-    const User = (await import("./models/user.model.js")).default;
-
-    // Fetch the first user from DB
-    const user = await User.findOne();
-    if (!user || !user.email) {
-      return res.status(404).send("❌ No user found in DB with email");
-    }
-
-    // Send test email to that user
-    await sendExpiryAlert(
-      user.email,
-      user.name || "Test User",
-      ["Milk", "Eggs", "Bread"]
-    );
-
-    res.send(`✅ Test email sent to ${user.email}`);
+    await sendTodaysExpiryEmails(); // Call the real function
+    res.send("✅ Real expiry emails triggered successfully");
   } catch (err) {
-    console.error("❌ Test email failed:", err.response?.body || err.message);
-    res
-      .status(500)
-      .send(
-        "❌ Failed: " +
-          (err.response?.body?.errors?.[0]?.message || err.message)
-      );
+    console.error("❌ Failed to trigger expiry emails:", err);
+    res.status(500).send("❌ Failed: " + (err.message || "Unknown error"));
   }
 });
 
