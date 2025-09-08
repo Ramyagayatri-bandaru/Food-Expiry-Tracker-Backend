@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cron from "node-cron";
 
 // ✅ Import models & utils at the top
-import Food from "./models/Food.js";
+const Food = (await import('./models/food.models.js')).default;
 import { sendExpiryAlert } from "./utils/mailer.js";
 
 dotenv.config();
