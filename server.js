@@ -37,48 +37,57 @@ connectDB().then(async () => {
   console.log("MongoDB connected");
 
   // -------------------- FUNCTION: Send today's expiry emails --------------------
-  async function sendTodaysExpiryEmails() {
-    try {
-      const startOfToday = new Date();
-      startOfToday.setHours(0, 0, 0, 0);
+async function sendTodaysExpiryEmails() {
+  try {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
 
-      const endOfToday = new Date();
-      endOfToday.setHours(23, 59, 59, 999);
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
 
-      // Fetch items expiring today
-      const expiringItems = await Food.find({
-        expiryDate: { $gte: startOfToday, $lte: endOfToday },
-      }).populate("userId");
+    // Fetch items expiring today
+    const expiringItems = await Food.find({
+      expiryDate: { $gte: startOfToday, $lte: endOfToday },
+    }).populate("userId");
 
-      if (expiringItems.length === 0) {
-        console.log("No food items expiring today.");
-        return;
-      }
-
-      // Group items by user
-      const userItems = {};
-      expiringItems.forEach((item) => {
-        if (!item.userId || !item.userId.email) return;
-
-        const email = item.userId.email;
-        if (!userItems[email]) {
-          userItems[email] = { name: item.userId.name || "User", items: [] };
-        }
-        userItems[email].items.push(item.name);
-      });
-
-      // Send one email per user and log items
-      for (const email in userItems) {
-        const { name, items } = userItems[email];
-        console.log(
-          `About to send email to ${email} for items: ${items.join(", ")}`
-        );
-        await sendExpiryAlert(email, name, items);
-      }
-    } catch (error) {
-      console.error("Error sending today's expiry emails:", error);
+    if (expiringItems.length === 0) {
+      console.log("No food items expiring today.");
+      return;
     }
+
+    // Group items by user
+    const userItems = {};
+    expiringItems.forEach((item) => {
+      if (!item.userId || !item.userId.email) return;
+
+      const email = item.userId.email;
+      if (!userItems[email]) {
+        userItems[email] = { name: item.userId.name || "User", items: [] };
+      }
+
+      // Format item with expiry date (DD Month YYYY)
+      const formattedItem = `${item.name} [Expiring on: ${new Date(item.expiryDate).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })}]`;
+
+      userItems[email].items.push(formattedItem);
+    });
+
+    // Send one email per user and log items
+    for (const email in userItems) {
+      const { name, items } = userItems[email];
+      console.log(
+        `About to send email to ${email} for items: ${items.join(", ")}`
+      );
+      await sendExpiryAlert(email, name, items);
+    }
+  } catch (error) {
+    console.error("Error sending today's expiry emails:", error);
   }
+}
+
 
   // -------------------- RUN IMMEDIATELY ON SERVER START --------------------
   sendTodaysExpiryEmails();
