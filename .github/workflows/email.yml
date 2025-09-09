@@ -1,4 +1,4 @@
-name: Daily Email Trigger
+name: Tomorrow's Expiry Email Trigger
 
 on:
   schedule:
@@ -9,6 +9,6 @@ jobs:
   send-email:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Food Expiry Email
+      - name: Trigger Tomorrow's Food Expiry Email
         run: |
           curl -X GET https://food-expiry-tracker-backend-h11q.onrender.com/test-email
