@@ -20,7 +20,7 @@ export const sendExpiryAlert = async (to, to_name, message_lines) => {
 
       <p style="font-size: 16px;">
         Just a friendly reminder from <strong>Food Expiry Tracker</strong> 🕒 — 
-        the following food items in your kitchen are <strong style="color: #dc3545;">expiring today</strong>:
+        the following food items in your kitchen are <strong style="color: #dc3545;">expiring tomorrow</strong>:
       </p>
 
       <ul style="background-color: #fff; padding: 15px 20px; border-left: 4px solid #28a745; border-radius: 6px; list-style-type: '  →'; font-size: 16px;">
