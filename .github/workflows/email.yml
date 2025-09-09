@@ -1,10 +1,9 @@
 name: Daily Email Trigger
 
-# Triggers
 on:
-  workflow_dispatch:   # Enables manual runs
   schedule:
-    - cron: "30 2 * * *"  # 2:30 UTC = 8:00 AM IST
+   - cron: "*/15 * * * *"   # every 15 minutes
+  workflow_dispatch:
 
 jobs:
   send-email:
