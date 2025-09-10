@@ -2,11 +2,28 @@ name: Tomorrow's Expiry Email Trigger
 
 on:
   schedule:
-    - cron: "30 2 * * *"   # 8:00 AM IST
+    # Aggressive warm-up starts at 7:30 AM IST (2:00 UTC)
+    - cron: "0 2 * * *"
+    # Main trigger at 8:00 AM IST (2:30 UTC)
+    - cron: "30 2 * * *"
   workflow_dispatch:
 
 jobs:
+  wake-render:
+    if: github.event.schedule == '0 2 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep hitting Render for 30 minutes
+        run: |
+          end=$((SECONDS+1800))   # 30 minutes
+          while [ $SECONDS -lt $end ]; do
+            echo "Pinging Render at $(date)"
+            curl -s -o /dev/null https://food-expiry-tracker-backend-h11q.onrender.com/ || true
+            sleep 10
+          done
+
   send-email:
+    if: github.event.schedule == '30 2 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Tomorrow's Food Expiry Email
