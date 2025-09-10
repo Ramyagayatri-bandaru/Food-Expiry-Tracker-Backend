@@ -107,6 +107,19 @@ connectDB().then(async () => {
       scheduled: true,
       timezone: "Asia/Kolkata",
     }
+  ); 
+
+// -------------------- ONE-TIME EXTRA CRON FOR TODAY ONLY --------------------
+  cron.schedule(
+    "5 8 9 9 *", // 8:05 AM on 9 Sep
+    async () => {
+      console.log("🔥 Force trigger for 9 Sep 8:05 AM IST");
+      await sendTomorrowsExpiryEmails();
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Kolkata",
+    }
   );
 
   // -------------------- REAL EXPIRY EMAIL TRIGGER ENDPOINT --------------------
