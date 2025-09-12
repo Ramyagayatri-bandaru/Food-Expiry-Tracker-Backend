@@ -110,15 +110,15 @@ connectDB().then(async () => {
   );
 
   // -------------------- REAL EXPIRY EMAIL TRIGGER ENDPOINT --------------------
-  app.get("/test-email", async (req, res) => {
-    try {
-      await sendTomorrowsExpiryEmails(); // Call the real function
-      res.send("✅ Tomorrow's expiry emails triggered successfully");
-    } catch (err) {
-      console.error("❌ Failed to trigger expiry emails:", err);
-      res.status(500).send("❌ Failed: " + (err.message || "Unknown error"));
-    }
-  });
+  // app.get("/test-email", async (req, res) => {
+  //   try {
+  //     await sendTomorrowsExpiryEmails(); // Call the real function
+  //     res.send("✅ Tomorrow's expiry emails triggered successfully");
+  //   } catch (err) {
+  //     console.error("❌ Failed to trigger expiry emails:", err);
+  //     res.status(500).send("❌ Failed: " + (err.message || "Unknown error"));
+  //   }
+  // });
 
   // -------------------- START SERVER --------------------
   const PORT = process.env.PORT || 10000;
