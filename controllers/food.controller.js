@@ -1,4 +1,4 @@
-import FoodItem from '../models/food.model.js';
+import FoodItem from "../models/food.model.js";
 
 /**
  * @desc Get all food items for the logged-in user
@@ -8,8 +8,8 @@ export const getAllItems = async (req, res) => {
     const items = await FoodItem.find({ userId: req.user.id });
     res.json(items);
   } catch (error) {
-    console.error('Error getting items:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error getting items:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -18,21 +18,27 @@ export const getAllItems = async (req, res) => {
  */
 export const addItem = async (req, res) => {
   try {
-    const { name, expiryDate, quantity } = req.body;
+    const { name, expiryDate, manufactureDate, quantity } = req.body;
+
+    // Basic validation
+    if (!name || !expiryDate || !manufactureDate || !quantity) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     const newItem = new FoodItem({
       name,
       quantity,
+      manufactureDate,
       expiryDate,
-      userId: req.user.id
+      userId: req.user.id,
     });
 
     await newItem.save();
 
-    res.status(201).json({ message: 'Item added', item: newItem });
+    res.status(201).json({ message: "Item added successfully", item: newItem });
   } catch (error) {
-    console.error('Error adding item:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error adding item:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -41,22 +47,27 @@ export const addItem = async (req, res) => {
  */
 export const updateItem = async (req, res) => {
   try {
-    const { name, expiryDate, quantity } = req.body;
+    const { name, expiryDate, manufactureDate, quantity } = req.body;
+
+    // Validate input
+    if (!name || !expiryDate || !manufactureDate || !quantity) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     const updatedItem = await FoodItem.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id }, 
-      { name, expiryDate, quantity },
+      { _id: req.params.id, userId: req.user.id },
+      { name, quantity, manufactureDate, expiryDate },
       { new: true }
     );
 
     if (!updatedItem) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(404).json({ message: "Item not found" });
     }
 
-    res.json({ message: 'Item updated', item: updatedItem });
+    res.json({ message: "Item updated successfully", item: updatedItem });
   } catch (error) {
-    console.error('Error updating item:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error updating item:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -67,16 +78,16 @@ export const deleteItem = async (req, res) => {
   try {
     const deletedItem = await FoodItem.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user.id
+      userId: req.user.id,
     });
 
     if (!deletedItem) {
-      return res.status(404).json({ message: 'Item not found' });
+      return res.status(404).json({ message: "Item not found" });
     }
 
-    res.json({ message: 'Item deleted' });
+    res.json({ message: "Item deleted successfully" });
   } catch (error) {
-    console.error('Error deleting item:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error deleting item:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
