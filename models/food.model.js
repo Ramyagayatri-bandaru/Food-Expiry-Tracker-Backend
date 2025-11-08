@@ -1,12 +1,34 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const foodItemSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  quantity: { type: Number, required: true },
-  manufactureDate: { type: Date, required: true },
-  expiryDate: { type: Date, required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-}, { timestamps: true });
+const foodSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    manufactureDate: {
+      type: Date,
+      required: true, // 
+    },
+    expiryDate: {
+      type: Date,
+      required: true,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("FoodItem", foodItemSchema);
+const FoodItem = mongoose.model("FoodItem", foodSchema);
+export default FoodItem;
 
